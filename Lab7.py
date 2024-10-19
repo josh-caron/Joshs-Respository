@@ -13,8 +13,7 @@ def calculate_student_grade(student_name):
         print(f"{assignment}: {score}%")
         total_score += score * (weight / 100)
         total_weight += weight
-    total_grade = (total_score / total_weight) * 100 if total_weight > 0 else 0
-    print(f"Total grade: {total_grade:.1f}%")
+    print(f"Total score: {total_grade:.1f}%")
 
 if __name__ == '__main__':
     student_name = input("Enter the student's name: ")
