@@ -19,6 +19,18 @@ def main():
               '4. Read RLE Hex String', '5. Read Data Hex String', '6. Display Image', '7. Display RLE String',
               '8. Display Hex RLE Data', '9. Display Hex Flat Data', sep='\n', end='\n\n')
         option = int(input('Select a Menu Option: '))
+# def to_hex_string(data):
+        # Takes list of hexadecimal numbers and returns a string of decimal characters
+    # def count_runs(flat_data):
+        # Returns number of runs of data in an image data set; double this result for length of encoded (RLE) list. Runs cannot be longer than 15.
+    # def encode_rle(flat_data):
+        # Returns encoding (in RLE) of the raw data passed in; used to generate RLE representation of a data. Runs cannot be longer than 15.
+    # def get_decoded_length(rle_data):
+        # Returns decompressed size RLE data; used to generate flat data from RLE encoding. (Counterpart to #2)
+    # def decode_rle(rle_data):
+        # Returns the decoded data set from RLE encoded data. This decompresses RLE data for use. (Inverse of #3)
+    # def string_to_data(data_string):
+        # Translates a string in hexadecimal format into byte data (can be raw or RLE). (Inverse of #1)
 
 
 if __name__ == '__main__':
