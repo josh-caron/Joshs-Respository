@@ -19,7 +19,11 @@ def main():
               '4. Read RLE Hex String', '5. Read Data Hex String', '6. Display Image', '7. Display RLE String',
               '8. Display Hex RLE Data', '9. Display Hex Flat Data', sep='\n', end='\n\n')
         option = int(input('Select a Menu Option: '))
-# def to_hex_string(data):
+    
+
+    
+    
+    # def to_hex_string(data):
         # Takes list of hexadecimal numbers and returns a string of decimal characters
     # def count_runs(flat_data):
         # Returns number of runs of data in an image data set; double this result for length of encoded (RLE) list. Runs cannot be longer than 15.
@@ -31,6 +35,42 @@ def main():
         # Returns the decoded data set from RLE encoded data. This decompresses RLE data for use. (Inverse of #3)
     # def string_to_data(data_string):
         # Translates a string in hexadecimal format into byte data (can be raw or RLE). (Inverse of #1)
+
+def consecutive_fours(my_list):
+    var = 1
+    for i in my_list:
+        if i == my_list[var] and i == my_list[var+1] and i == my_list[var+2]:
+            return True
+        else:
+            var += 1
+            if var == len(my_list)-2:
+                return False
+
+def sum_by_parity(my_list):
+    sum_even = 0    
+    sum_odd = 0
+    for i in range(len(my_list)):
+        if i % 2 == 0:
+            sum_even += my_list[i]
+        else:
+            sum_odd += my_list[i]
+    return [sum_even, sum_odd]
+    
+def expand_by_index(my_list):
+    new_list = []
+    for i in range(len(my_list)):
+        for j in range(my_list[i]):
+            new_list.append(i)
+    return new_list
+
+def numerical_count(string):
+    count = 0 
+    for i in string:
+        if i.isdigit():
+            count += 1
+    return count
+
+
 
 
 if __name__ == '__main__':
