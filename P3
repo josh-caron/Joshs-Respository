@@ -1,0 +1,125 @@
+class Pakudex:
+    def __init__(self, capacity = 20):
+        self.capacity = capacity
+        self.pakudex = []
+    def get_size(self):
+        return len(self.pakudex)
+    def get_capacity(self):
+        return self.capacity
+    def get_species_array(self):
+            if len(self.pakudex) == 0:
+                return None
+            return [pakuri.get_species() for pakuri in self.pakudex]
+    def get_stats(self, species):
+        for pakuri in self.pakudex:
+            if pakuri.get_species() == species:
+                return [pakuri.get_attack(), pakuri.get_defense(), pakuri.get_speed()]
+        return None
+    def sort_pakuri(self):
+        self.pakudex.sort()
+
+    def add_pakuri(self, species):
+        for pakuri in self.pakudex:
+            if pakuri.get_species() == species:
+                return False
+        if self.get_size() >= self.capacity:
+            return False
+        new_pakuri = Pakuri(species)
+        self.pakudex.append(new_pakuri)
+        return True
+
+    def evolve_species(self, species):
+        for pakuri in self.pakudex:
+            if pakuri.get_species() == species:
+                pakuri.evolve()
+                return True
+        return False
+
+class Pakuri:
+    def __init__(self, species):
+        self.species = species
+        self.attack = len(species)*7+9
+        self.defense = len(species)*5+17
+        self.speed = len(species)*6+13
+    def get_species(self):
+        return self.species
+    def get_attack(self):
+        return self.attack
+    def get_defense(self):
+        return self.defense
+    def get_speed(self):
+        return self.speed
+    def set_attack(self, new_attack):
+        self.attack = new_attack
+    def evolve(self):
+        self.attack *=2
+        self.defense *=4
+        self.speed *=3
+    def __lt__(self, other):
+        return self.species < other.species
+
+print("Welcome to Pakudex: Tracker Extraordinaire!")
+while True:
+    try:
+        max_cap = int(input("Enter max capacity of the Pakudex: "))
+        if max_cap < 0:
+            print("Please enter a valid size.")
+            continue
+        break
+    except ValueError:
+        print("Please enter a valid size.")
+my_pakudex = Pakudex(max_cap)
+print(f"The Pakudex can hold {max_cap} species of Pakuri.")
+
+while True:
+    print("\nPakudex Main Menu", "-----------------", "1. List Pakuri", "2. Show Pakuri", "3. Add Pakuri",
+          "4. Evolve Pakuri", "5. Sort Pakuri", "6. Exit", sep='\n')
+    try:
+        choice = int(input("\nWhat would you like to do? "))
+    except ValueError:
+        print("Unrecognized menu selection!")
+        continue
+    if choice == 1:
+        if my_pakudex.get_size() != 0:
+            print("Pakuri In Pakudex:")
+            num = 1
+            for i in my_pakudex.get_species_array():
+                print(f"{num}. {i}")
+                num += 1
+        else:
+            print('No Pakuri in Pakudex yet!')
+    elif choice == 2:
+            species_name = input("Enter the name of the species to display: ")
+            list = my_pakudex.get_stats(species_name)
+            if list:
+                print(f"\nSpecies: {species_name}\nAttack: {list[0]}\nDefense: {list[1]}\nSpeed: {list[2]}")
+            else:
+                print("Error: No such Pakuri!")
+    elif choice == 3:
+        if my_pakudex.get_size() == my_pakudex.get_capacity():
+            print("Error: Pakudex is full!")
+        else:
+            name = input("Enter the name of the species to add: ")
+            if my_pakudex.get_species_array() is None:
+                my_pakudex.add_pakuri(name)
+                print(f"Pakuri species {name} successfully added!")
+            elif name in my_pakudex.get_species_array():
+                print("Error: Pakudex already contains this species")
+            else:
+                my_pakudex.add_pakuri(name)
+                print(f"Pakuri species {name} successfully added!")
+    elif choice == 4:
+        name = input("Enter the name of the species to evolve: ")
+        if name in my_pakudex.get_species_array():
+            my_pakudex.evolve_species(name)
+            print(f"{name} has evolved!")
+        else:
+            print("Error: No such Pakuri!")
+    elif choice == 5:
+        my_pakudex.sort_pakuri()
+        print("Pakuri have been sorted!")
+    elif choice == 6:
+        print("Thanks for using Pakudex! Bye!")
+        break
+    else:
+        print("Unrecognized menu selection!")
