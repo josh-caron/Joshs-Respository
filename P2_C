@@ -1,0 +1,177 @@
+import console_gfx
+
+def to_hex_string(data):
+    string = ''
+    for i in data:
+        if int(i) in range(10):
+            num = i
+        elif i == 10:
+            num = 'a'
+        elif i == 11:
+            num = 'b'
+        elif i == 12:
+            num = 'c'
+        elif i == 13:
+            num = 'd'
+        elif i == 14:
+            num = 'e'
+        elif i == 15:
+            num = 'f'
+        else:
+            print('Data must be in range(0, 16)')
+            return
+        string += str(num)
+    return string
+
+def count_runs(flat_data):
+    n = 0
+    count = 0
+    while n < len(flat_data):
+        run_length = 1
+        while n < len(flat_data) - 1 and flat_data[n] == flat_data[n + 1]:
+            run_length += 1
+            n += 1
+        count += run_length // 15
+        if run_length % 15 > 0:
+            count += 1
+        n += 1
+    return count
+
+def encode_rle(flat_data):
+    if len(flat_data) == 1:
+        return []
+    encoded = []
+    count = 1
+    for i in range(len(flat_data) - 1):
+        if flat_data[i] == flat_data[i + 1]:
+            count += 1
+            if count == 15:
+                encoded.extend([15, flat_data[i]])
+                count = 0
+        else:
+            encoded.extend([count, flat_data[i]])
+            count = 1
+    encoded.extend([count, flat_data[-1]])
+    return encoded
+
+def get_decoded_length(rle_data):
+    count = 0
+    for i in range(len(rle_data)):
+        if i % 2 == 0:
+            count += rle_data[i]
+    return count
+
+def decode_rle(rle_data):
+    decoded_list = []
+    for i in range(0, len(rle_data), 2):
+        count = rle_data[i]
+        value = rle_data[i + 1]
+        decoded_list.extend([value] * count)
+    return decoded_list
+
+def hex_char_decode(hexnumber):
+    i = hexnumber
+    if i in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+        ii = int(i)
+        return ii
+    elif i == 'A' or i == 'a':
+        ii = 10
+        return ii
+    elif i == 'B' or i == 'b':
+        ii = 11
+        return ii
+    elif i == 'C' or i == 'c':
+        ii = 12
+        return ii
+    elif i == 'D' or i == 'd':
+        ii = 13
+        return ii
+    elif i == 'E' or i == 'e':
+        ii = 14
+        return ii
+    elif i == 'F' or i == 'f':
+        ii = 15
+        return ii
+    else:
+        return 0
+
+def string_to_data(data_string):
+    int_list = []
+    for i in data_string:
+        int_list.append(hex_char_decode(i))
+    return int_list
+
+def to_rle_string(rle_data, separator=':'):
+    rle_string = ''
+    for i in range(len(rle_data)):
+        if i % 2 == 0:
+            rle_string += str(rle_data[i])
+        else:
+            rle_string += str(to_hex_string([rle_data[i]]))
+            rle_string += separator
+    rle_string = rle_string[:-1]
+    return rle_string
+
+def string_to_rle(rle_string, new_rle_list=None):
+    if new_rle_list is None:
+        new_rle_list = rle_string.split(':')
+    if len(new_rle_list) == 0:
+        return []
+    if len(new_rle_list[0]) == 3:
+        return [int(new_rle_list[0][0] + new_rle_list[0][1]), hex_char_decode(new_rle_list[0][2])] + string_to_rle(
+            None, new_rle_list[1:])
+    else:
+        return [int(new_rle_list[0][0]), hex_char_decode(new_rle_list[0][1])] + string_to_rle(None, new_rle_list[1:])
+
+def option_eight(string):
+    new_list = []
+    for i in string:
+        new_list.append(hex_char_decode(i))
+    return new_list
+
+
+if __name__ == '__main__':
+
+    print("Welcome to the RLE image encoder!", "Displaying Spectrum Image:", sep = '\n\n')
+    console_gfx.display_image(console_gfx.test_rainbow)
+    print('\nRLE Menu', '--------', '0. Exit', '1. Load File', '2. Load Test Image', '3. Read RLE String',
+          '4. Read RLE Hex String', '5. Read Data Hex String', '6. Display Image', '7. Display RLE String',
+          '8. Display Hex RLE Data', '9. Display Hex Flat Data', sep='\n', end='\n\n')
+    option = int(input('Select a Menu Option: '))
+    while option != 0:
+        if option == 1:
+            file_name = input('Enter name of file to load: ')
+            image_data = console_gfx.load_file(file_name)
+        elif option == 2:
+            image_data = console_gfx.test_image
+            print('Test image data loaded.')
+        elif option == 3:
+            rle_string_input = input('Enter an RLE string to be decoded: ')
+            x = string_to_rle(rle_string_input)
+            image_data = decode_rle(x)
+        elif option == 4:
+            hex_string_input = input("Enter the hex string holding RLE data: ")
+            x = string_to_data(hex_string_input)
+            image_data = decode_rle(x)
+        elif option == 5:
+            flat_data_input = input("Enter the hex string holding flat data: ")
+            x = encode_rle(flat_data_input)
+            image_data = decode_rle(x)
+        elif option == 6:
+            print("Displaying image...")
+            console_gfx.display_image(image_data)
+        elif option == 7:
+            x = to_rle_string(encode_rle(image_data))
+            print(f"RLE representation: {x}")
+        elif option == 8:
+            x = to_hex_string(encode_rle(image_data))
+            print(f"RLE hex values: {x}")
+        elif option == 9:
+            x = to_hex_string(image_data)
+            print(f"Flat hex values: {x}")
+
+
+        print('\nRLE Menu', '--------', '0. Exit', '1. Load File', '2. Load Test Image', '3. Read RLE String',
+              '4. Read RLE Hex String', '5. Read Data Hex String', '6. Display Image', '7. Display RLE String',
+              '8. Display Hex RLE Data', '9. Display Hex Flat Data', sep='\n', end='\n\n')
+        option = int(input('Select a Menu Option: '))
